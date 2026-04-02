@@ -1,3 +1,6 @@
+import os
+# Ép Python phải nhìn thấy thư mục chứa file libnvJitLink.so.13 của CUDA
+os.environ["LD_LIBRARY_PATH"] = "/usr/local/cuda/lib64:" + os.environ.get("LD_LIBRARY_PATH", "")
 import torch
 from unsloth import FastLanguageModel
 from unsloth.chat_templates import get_chat_template

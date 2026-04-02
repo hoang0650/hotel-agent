@@ -8,10 +8,10 @@ HF_TOKEN = os.getenv("HF_TOKEN") # Điền token của bạn (nhớ cấp quyề
 REPO_NAME = "phgrouptechs/hotel-agent"       # Ví dụ: "nguyenvana/hotel-agent-8b-gguf"
 
 # Tên file GGUF bạn đang có trên máy RunPod
-LOCAL_FILE_PATH = "hotel_agent_model.Q4_K_M.gguf" 
+LOCAL_FILE_PATH = "hotel_agent_model_gguf/llama-3-8b-instruct.Q4_K_M.gguf"
 
 # Tên file khi hiển thị trên Hugging Face (thường để giống tên gốc)
-PATH_IN_REPO = "hotel_agent_model.Q4_K_M.gguf"    
+PATH_IN_REPO = "hotel_agent_model.Q4_K_M.gguf"
 # ==========================================
 # TIẾN HÀNH UPLOAD
 # ==========================================

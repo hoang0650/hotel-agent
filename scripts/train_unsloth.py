@@ -6,20 +6,22 @@ from trl import SFTTrainer
 from transformers import TrainingArguments
 
 # ==========================================
-# 1. CẤU HÌNH CƠ BẢN VÀ TẢI MODEL
+# 1. CẤU HÌNH CƠ BẢN VÀ TẢI MODEL GỐC
 # ==========================================
 max_seq_length = 2048
 dtype = None 
 load_in_4bit = True 
 
-print("Đang tải model phgrouptechs/Denglish-8B-Instruct...")
+print("Đang tải model gốc Llama-3-8B-Instruct...")
+# SỬ DỤNG MODEL BASE CỦA UNSLOTH ĐỂ TRÁNH LỖI XUNG ĐỘT ADAPTER
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "phgrouptechs/Denglish-8B-Instruct",
+    model_name = "unsloth/llama-3-8b-Instruct-bnb-4bit",
     max_seq_length = max_seq_length,
     dtype = dtype,
     load_in_4bit = load_in_4bit,
 )
 
+# Bây giờ hàm này sẽ chạy mượt mà vì model gốc chưa có LoRA nào cả
 model = FastLanguageModel.get_peft_model(
     model,
     r = 16, 
@@ -48,10 +50,8 @@ def formatting_prompts_func(examples):
 # ==========================================
 print("Đang tải và chuẩn hóa các dataset...")
 
-# 2.1. Local Hotel Dataset (Data ShareGPT chứa các mẫu tuân thủ Q&A Template)
 local_dataset = load_dataset("json", data_files="data/hotel_dataset.json", split="train")
 
-# 2.2. Databricks Dolly 15k (Giúp AI tuân thủ mệnh lệnh tốt hơn)
 dolly_raw = load_dataset("databricks/databricks-dolly-15k", split="train")
 def format_dolly(example):
     prompt = example["instruction"]
@@ -64,7 +64,6 @@ def format_dolly(example):
 dolly_formatted = dolly_raw.map(format_dolly, remove_columns=dolly_raw.column_names)
 dolly_formatted = dolly_formatted.shuffle(seed=42).select(range(2000))
 
-# 2.3. OpenAssistant (Tăng độ tự nhiên khi giao tiếp)
 oasst_raw = load_dataset("timdettmers/openassistant-guanaco", split="train")
 def format_oasst(example):
     text = example["text"]
@@ -78,7 +77,6 @@ def format_oasst(example):
 oasst_formatted = oasst_raw.map(format_oasst, remove_columns=oasst_raw.column_names)
 oasst_formatted = oasst_formatted.shuffle(seed=42).select(range(1500))
 
-# 2.4. DA_MultiWOZ_hotel (Kiến thức domain khách sạn)
 woz_hotel_raw = load_dataset("vidhikatkoria/DA_MultiWOZ_hotel", split="train")
 def format_woz_hotel(example):
     return {"conversations": [
@@ -88,7 +86,6 @@ def format_woz_hotel(example):
 woz_hotel_formatted = woz_hotel_raw.map(format_woz_hotel, remove_columns=woz_hotel_raw.column_names)
 woz_hotel_formatted = woz_hotel_formatted.shuffle(seed=42).select(range(1500))
 
-# 2.5. Gộp tất cả Dataset
 print("Đang trộn dữ liệu (Data Mixing)...")
 mixed_dataset = concatenate_datasets([
     local_dataset, 

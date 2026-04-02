@@ -11,7 +11,7 @@ from transformers import TrainingArguments
 # ==========================================
 # 1. CẤU HÌNH CƠ BẢN VÀ TẢI MODEL GỐC
 # ==========================================
-max_seq_length = 2048
+max_seq_length = 1024
 dtype = None 
 load_in_4bit = False
 
@@ -112,8 +112,8 @@ trainer = SFTTrainer(
     dataset_num_proc = 2,
     packing = False, 
     args = TrainingArguments(
-        per_device_train_batch_size = 2,
-        gradient_accumulation_steps = 4,
+        per_device_train_batch_size = 1,
+        gradient_accumulation_steps = 8,
         warmup_steps = 10,
         max_steps = 500, 
         learning_rate = 2e-4,

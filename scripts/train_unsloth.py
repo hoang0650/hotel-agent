@@ -10,7 +10,7 @@ from transformers import TrainingArguments
 # ==========================================
 max_seq_length = 2048
 dtype = None 
-load_in_4bit = True 
+load_in_4bit = False
 
 print("Đang tải model gốc Llama-3-8B-Instruct...")
 # SỬ DỤNG MODEL BASE CỦA UNSLOTH ĐỂ TRÁNH LỖI XUNG ĐỘT ADAPTER
